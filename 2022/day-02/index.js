@@ -38,7 +38,7 @@ const myMoves = {
 };
 
 const main = () => {
-	const data = getData('../../data/rps-strategy.txt', 'utf8');
+	const data = getData('rps-strategy.txt', 'utf8');
 
 	// [ ['A', 'Y'], ['B', 'X'], ... ]
 	const rounds = parseData(data);

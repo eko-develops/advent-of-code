@@ -8,7 +8,7 @@ const parseData = (data) => {
 };
 
 const main = () => {
-	const data = getData('../../data/elf-calories.txt', 'utf8');
+	const data = getData('elf-calories.txt', 'utf8');
 	const result = parseData(data);
 
 	const elves = [];
