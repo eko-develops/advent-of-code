@@ -19,7 +19,7 @@ const main = () => {
 	}
 
 	const totalPriority = getTotalPriority(commonItems);
-	console.log(totalPriority);
+	console.log(`The sum of total priorities is ${totalPriority}`);
 };
 
 const parseData = (data) => {
