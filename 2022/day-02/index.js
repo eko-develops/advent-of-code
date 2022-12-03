@@ -4,10 +4,14 @@
  * Paper - B
  * Scissors - C
  *
- * Second Column - What you should play in response
+ * Second Column - What you should play in response/outcome of the round
  * Rock - X
  * Paper - Y
  * Scissors - Z
+ *
+ * Lose - X
+ * Draw - Y
+ * Win - Z
  *
  * Calculating Points
  * Rock - 1
@@ -21,15 +25,36 @@
 
 const { getData } = require('../../scripts.js');
 
+const opponentMoves = {
+	A: 'rock',
+	B: 'paper',
+	C: 'scissors',
+};
+
+const myMoves = {
+	X: 'rock',
+	Y: 'paper',
+	Z: 'scissors',
+};
+
 const main = () => {
 	const data = getData('../../data/rps-strategy.txt', 'utf8');
 
 	// [ ['A', 'Y'], ['B', 'X'], ... ]
 	const rounds = parseData(data);
 
-	const totalPoints = getPointsByRound(rounds);
+	// part 1
+	const totalPointsByRound = getTotalPointsByRound(rounds);
 
-	console.log(`The total points from the strategy will be ${totalPoints}.`);
+	//part 2
+	const totalPointsByResult = getTotalPointsByResult(rounds);
+
+	console.log(
+		`The total points from the first strategy will be ${totalPointsByRound}.`
+	);
+	console.log(
+		`The total points from the second strategy will be ${totalPointsByResult}.`
+	);
 };
 
 const parseData = (data) => {
@@ -39,7 +64,7 @@ const parseData = (data) => {
 		.map((round) => round.split(' '));
 };
 
-const checkRound = (opponentPlay, myPlay) => {
+const getRoundResult = (opponentPlay, myPlay) => {
 	// if my move is this, play that
 	const winningMoves = {
 		X: 'C',
@@ -65,39 +90,102 @@ const checkRound = (opponentPlay, myPlay) => {
 	}
 };
 
-const getPointsByRound = (rounds) => {
+const getTotalPointsByResult = (rounds) => {
+	let totalPoints = 0;
+
+	const endings = {
+		X: 'lose',
+		Y: 'draw',
+		Z: 'win',
+	};
+
+	const determinedOutcomes = {
+		// if we need to draw
+		draw: {
+			//and the opponent plays this
+			A: 'X', //we play this
+			B: 'Y',
+			C: 'Z',
+		},
+		win: {
+			A: 'Y',
+			B: 'Z',
+			C: 'X',
+		},
+		lose: {
+			A: 'Y',
+			B: 'X',
+			C: 'Z',
+		},
+	};
+
+	for (const round of rounds) {
+		const [opponentPlay, roundResult] = round;
+		const roundEndString = endings[roundResult];
+		const myPlay = determinedOutcomes[roundEndString][opponentPlay];
+
+		totalPoints += getPointsRoundResult(roundEndString);
+		totalPoints += getPointsForShape(myPlay);
+
+		console.log({
+			weNeedTo: `${roundResult} - ${roundEndString}`,
+			opponentPlays: `${opponentPlay} - ${opponentMoves[opponentPlay]}`,
+			iShouldPlay: `${myPlay} - ${myMoves[myPlay]}`,
+			pointsAddedForRound: `${getPointsRoundResult(
+				roundEndString
+			)} points for ${roundEndString}ing`,
+			pointsAddedForShape: `${getPointsForShape(myPlay)} for playing ${
+				myMoves[myPlay]
+			}`,
+			totalPoints,
+		});
+	}
+
+	return totalPoints;
+};
+
+const getTotalPointsByRound = (rounds) => {
+	let totalPoints = 0;
+
+	for (const round of rounds) {
+		const [opponentPlay, myPlay] = round;
+
+		const roundResult = getRoundResult(opponentPlay, myPlay);
+
+		// add the points depending on the result of the round
+		totalPoints += getPointsRoundResult(roundResult);
+
+		// add the points for the shape selected
+		totalPoints += getPointsForShape(myPlay);
+	}
+
+	return totalPoints;
+};
+
+const getPointsRoundResult = (roundResult) => {
 	const roundPoint = {
 		win: 6,
 		draw: 3,
 		lose: 0,
 	};
 
-	const movePoint = {
+	if (roundResult === 'win') {
+		return roundPoint.win;
+	} else if (roundResult === 'draw') {
+		return roundPoint.draw;
+	} else {
+		return roundPoint.lose;
+	}
+};
+
+const getPointsForShape = (myPlay) => {
+	const shapePoint = {
 		X: 1,
 		Y: 2,
 		Z: 3,
 	};
 
-	let totalPoints = 0;
-
-	for (const round of rounds) {
-		const [opponentPlay, myPlay] = round;
-
-		const roundResult = checkRound(opponentPlay, myPlay);
-
-		if (roundResult === 'win') {
-			totalPoints += roundPoint.win;
-		} else if (roundResult === 'draw') {
-			totalPoints += roundPoint.draw;
-		} else {
-			totalPoints += roundPoint.lose;
-		}
-
-		// add the point for the shape selected
-		totalPoints += movePoint[myPlay];
-	}
-
-	return totalPoints;
+	return shapePoint[myPlay];
 };
 
 main();
