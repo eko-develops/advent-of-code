@@ -27,36 +27,7 @@ const main = () => {
 	// [ ['A', 'Y'], ['B', 'X'], ... ]
 	const rounds = parseData(data);
 
-	const roundPoint = {
-		win: 6,
-		draw: 3,
-		lose: 0,
-	};
-
-	const movePoint = {
-		X: 1,
-		Y: 2,
-		Z: 3,
-	};
-
-	let totalPoints = 0;
-
-	for (const round of rounds) {
-		const [opponentPlay, myPlay] = round;
-
-		const roundResult = checkRound(opponentPlay, myPlay);
-
-		if (roundResult === 'win') {
-			totalPoints += roundPoint.win;
-		} else if (roundResult === 'draw') {
-			totalPoints += roundPoint.draw;
-		} else {
-			totalPoints += roundPoint.lose;
-		}
-
-		// add the point for the shape selected
-		totalPoints += movePoint[myPlay];
-	}
+	const totalPoints = getPointsByRound(rounds);
 
 	console.log(`The total points from the strategy will be ${totalPoints}.`);
 };
@@ -92,6 +63,41 @@ const checkRound = (opponentPlay, myPlay) => {
 		// we can assume we lost
 		return 'lose';
 	}
+};
+
+const getPointsByRound = (rounds) => {
+	const roundPoint = {
+		win: 6,
+		draw: 3,
+		lose: 0,
+	};
+
+	const movePoint = {
+		X: 1,
+		Y: 2,
+		Z: 3,
+	};
+
+	let totalPoints = 0;
+
+	for (const round of rounds) {
+		const [opponentPlay, myPlay] = round;
+
+		const roundResult = checkRound(opponentPlay, myPlay);
+
+		if (roundResult === 'win') {
+			totalPoints += roundPoint.win;
+		} else if (roundResult === 'draw') {
+			totalPoints += roundPoint.draw;
+		} else {
+			totalPoints += roundPoint.lose;
+		}
+
+		// add the point for the shape selected
+		totalPoints += movePoint[myPlay];
+	}
+
+	return totalPoints;
 };
 
 main();
