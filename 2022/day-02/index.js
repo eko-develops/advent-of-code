@@ -121,24 +121,26 @@ const getTotalPointsByResult = (rounds) => {
 
 	for (const round of rounds) {
 		const [opponentPlay, roundResult] = round;
-		const roundEndString = endings[roundResult];
-		const myPlay = determinedOutcomes[roundEndString][opponentPlay];
+		const roundEndString = endings[roundResult]; // string version of outcome char in second column
+		const myPlay = determinedOutcomes[roundEndString][opponentPlay]; // depends on the outcome given in second column and what opponent plays
 
-		totalPoints += getPointsRoundResult(roundEndString);
-		totalPoints += getPointsForShape(myPlay);
+		totalPoints += getPointsRoundResult(roundEndString); // adds points depending on round result
+		totalPoints += getPointsForShape(myPlay); // adds points depending on my shape played
 
-		console.log({
-			weNeedTo: `${roundResult} - ${roundEndString}`,
-			opponentPlays: `${opponentPlay} - ${opponentMoves[opponentPlay]}`,
-			iShouldPlay: `${myPlay} - ${myMoves[myPlay]}`,
-			pointsAddedForRound: `${getPointsRoundResult(
-				roundEndString
-			)} points for ${roundEndString}ing`,
-			pointsAddedForShape: `${getPointsForShape(myPlay)} for playing ${
-				myMoves[myPlay]
-			}`,
-			totalPoints,
-		});
+		if (roundEndString === 'win') {
+			console.log({
+				weNeedTo: `${roundResult} - ${roundEndString}`,
+				opponentPlays: `${opponentPlay} - ${opponentMoves[opponentPlay]}`,
+				iShouldPlay: `${myPlay} - ${myMoves[myPlay]}`,
+				pointsAddedForRound: `${getPointsRoundResult(
+					roundEndString
+				)} points for ${roundEndString}ing`,
+				pointsAddedForShape: `${getPointsForShape(myPlay)} for playing ${
+					myMoves[myPlay]
+				}`,
+				totalPoints,
+			});
+		}
 	}
 
 	return totalPoints;
