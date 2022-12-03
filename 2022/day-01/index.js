@@ -24,11 +24,18 @@ const main = () => {
 		}
 	}
 
-	const highestCalorieElf = elves.sort((a, b) => a - b).at(-1);
+	const elvesCalorieSorted = elves.sort((a, b) => a - b);
+
+	const highestCalorieElf = elvesCalorieSorted.at(-1);
+	const totalTopCalorieElves = elvesCalorieSorted
+		.slice(-3)
+		.reduce((total, current) => (total += current));
 
 	console.log(
 		`The elf holding the most calories has ${highestCalorieElf} calories.`
 	);
+
+	console.log(`The 3 top elves calories total is ${totalTopCalorieElves}`);
 };
 
 main();
