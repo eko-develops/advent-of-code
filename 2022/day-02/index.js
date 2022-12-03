@@ -127,20 +127,18 @@ const getTotalPointsByResult = (rounds) => {
 		totalPoints += getPointsRoundResult(roundEndString); // adds points depending on round result
 		totalPoints += getPointsForShape(myPlay); // adds points depending on my shape played
 
-		if (roundEndString === 'win') {
-			console.log({
-				weNeedTo: `${roundResult} - ${roundEndString}`,
-				opponentPlays: `${opponentPlay} - ${opponentMoves[opponentPlay]}`,
-				iShouldPlay: `${myPlay} - ${myMoves[myPlay]}`,
-				pointsAddedForRound: `${getPointsRoundResult(
-					roundEndString
-				)} points for ${roundEndString}ing`,
-				pointsAddedForShape: `${getPointsForShape(myPlay)} for playing ${
-					myMoves[myPlay]
-				}`,
-				totalPoints,
-			});
-		}
+		console.log({
+			weNeedTo: `${roundResult} - ${roundEndString}`,
+			opponentPlays: `${opponentPlay} - ${opponentMoves[opponentPlay]}`,
+			iShouldPlay: `${myPlay} - ${myMoves[myPlay]}`,
+			pointsAddedForRound: `${getPointsRoundResult(
+				roundEndString
+			)} points for ${roundEndString}ing`,
+			pointsAddedForShape: `${getPointsForShape(myPlay)} for playing ${
+				myMoves[myPlay]
+			}`,
+			totalPoints,
+		});
 	}
 
 	return totalPoints;
