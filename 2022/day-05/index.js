@@ -4,6 +4,14 @@ const main = () => {
 	const data = getData('steps.txt', 'utf8');
 	const [crates, steps] = parseData(data);
 
+	// const part1 = firstStrategy(crates, steps);
+	// console.log(`The crates on top after moving them is ${part1.join('')}`);
+
+	const part2 = secondStrategy(crates, steps);
+	console.log(`The crates on top after moving them is ${part2.join('')}`);
+};
+
+const firstStrategy = (crates, steps) => {
 	let stepsCounter = 0;
 	while (stepsCounter < steps.length) {
 		const currentStep = steps[stepsCounter];
@@ -27,8 +35,35 @@ const main = () => {
 	crates.forEach((crate) => {
 		topCrates.push(crate.at(-1));
 	});
+	return topCrates;
+};
 
-	console.log(`The crates on top after moving them is ${topCrates.join('')}`);
+const secondStrategy = (crates, steps) => {
+	let stepsCounter = 0;
+	while (stepsCounter < steps.length) {
+		const currentStep = steps[stepsCounter];
+		const { amount, from, to } = currentStep;
+
+		const fromCrates = crates[from - 1]; // question givees index of crates by 1, we use 0
+		const toCrates = crates[to - 1];
+
+		const craneHold = []; // temporary hold for what the crane has
+
+		for (let i = 0; i < amount; i++) {
+			craneHold.push(fromCrates.pop());
+		}
+
+		toCrates.push(...craneHold.reverse());
+
+		stepsCounter++;
+	}
+
+	const topCrates = [];
+	console.log(topCrates);
+	crates.forEach((crate) => {
+		topCrates.push(crate.at(-1));
+	});
+	return topCrates;
 };
 
 const parseData = (data) => {
