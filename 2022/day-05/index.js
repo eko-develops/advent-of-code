@@ -3,12 +3,13 @@ const { getData } = require('../../scripts.js');
 const main = () => {
 	const data = getData('steps.txt', 'utf8');
 	const [crates, steps] = parseData(data);
-
+	console.log(crates);
 	let stepsCounter = 0;
 	while (stepsCounter < steps.length) {
 		const currentStep = steps[stepsCounter];
 		const { amount, from, to } = currentStep;
-		console.log({ amount, from, to });
+		// array.push - adds 1 or more element to end of array
+		// array.pop - removes last element from an array and returns that element
 
 		stepsCounter++;
 	}
@@ -40,7 +41,8 @@ const parseCrates = (crates) => {
 	for (const currentCrate of reversedCrates) {
 		const parsedCrate = currentCrate
 			.match(/.{1,4}/g)
-			.map((crate) => crate.match(/[A-Z]/g));
+			.map((crate) => crate.match(/[A-Z]/g))
+			.flat();
 
 		parsedCrate.forEach((crate, i) => {
 			if (structuredCrates[i] == undefined) {
@@ -51,7 +53,10 @@ const parseCrates = (crates) => {
 		});
 	}
 
-	return structuredCrates;
+	// [ [group], [group], ... ] - top of stack is end of array
+	return structuredCrates.map((groups) =>
+		groups.filter((crate) => crate !== null)
+	);
 };
 
 main();
