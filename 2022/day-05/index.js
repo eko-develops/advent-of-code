@@ -3,18 +3,32 @@ const { getData } = require('../../scripts.js');
 const main = () => {
 	const data = getData('steps.txt', 'utf8');
 	const [crates, steps] = parseData(data);
-	console.log(crates);
+
 	let stepsCounter = 0;
 	while (stepsCounter < steps.length) {
 		const currentStep = steps[stepsCounter];
 		const { amount, from, to } = currentStep;
-		// array.push - adds 1 or more element to end of array
-		// array.pop - removes last element from an array and returns that element
+
+		const fromCrates = crates[from - 1]; // question givees index of crates by 1, we use 0
+		const toCrates = crates[to - 1];
+
+		const craneHold = []; // temporary hold for what the crane has
+
+		for (let i = 0; i < amount; i++) {
+			craneHold.push(fromCrates.pop());
+		}
+
+		toCrates.push(...craneHold);
 
 		stepsCounter++;
 	}
-	// console.log(steps.slice(0, 3));
-	// console.log(crates);
+
+	const topCrates = [];
+	crates.forEach((crate) => {
+		topCrates.push(crate.at(-1));
+	});
+
+	console.log(`The crates on top after moving them is ${topCrates.join('')}`);
 };
 
 const parseData = (data) => {
@@ -42,7 +56,7 @@ const parseCrates = (crates) => {
 		const parsedCrate = currentCrate
 			.match(/.{1,4}/g)
 			.map((crate) => crate.match(/[A-Z]/g))
-			.flat();
+			.flat(); // unwrap crate in array
 
 		parsedCrate.forEach((crate, i) => {
 			if (structuredCrates[i] == undefined) {
@@ -54,8 +68,8 @@ const parseCrates = (crates) => {
 	}
 
 	// [ [group], [group], ... ] - top of stack is end of array
-	return structuredCrates.map((groups) =>
-		groups.filter((crate) => crate !== null)
+	return structuredCrates.map(
+		(groups) => groups.filter((crate) => crate !== null) // remove nulls
 	);
 };
 
