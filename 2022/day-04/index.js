@@ -3,7 +3,6 @@ const { getData } = require('../../scripts.js');
 const main = () => {
 	const data = getData('section-pairs.txt', 'utf8');
 
-	// [ [ pair, pair ], [ pair, pair ], ... ]
 	const sectionPairs = parseData(data);
 
 	//pt 1
@@ -19,18 +18,20 @@ const main = () => {
 
 const getTotalOverlapping = (sectionPairs) => {
 	let totalOverlapping = 0;
+
 	sectionPairs.forEach(([first, second]) => {
-		const [firstStarting, firstEnding] = first.split('-');
-		const [secondStarting, secondEnding] = second.split('-');
+		const [firstSection, secondSection] = parseSections(first, second);
+		const [firstStarting, firstEnding] = firstSection;
+		const [secondStarting, secondEnding] = secondSection;
 
 		const firstPair = [];
-		for (let i = parseInt(firstStarting); i <= parseInt(firstEnding); i++) {
-			firstPair.push(parseInt(i));
+		for (let i = firstStarting; i <= firstEnding; i++) {
+			firstPair.push(i);
 		}
 
 		const secondPair = [];
-		for (let i = parseInt(secondStarting); i <= parseInt(secondEnding); i++) {
-			secondPair.push(parseInt(i));
+		for (let i = secondStarting; i <= secondEnding; i++) {
+			secondPair.push(i);
 		}
 
 		for (const number of firstPair) {
@@ -46,21 +47,27 @@ const getTotalOverlapping = (sectionPairs) => {
 
 const getTotalAmountContained = (sectionPairs) => {
 	let amountContained = 0;
+
 	sectionPairs.forEach(([first, second]) => {
-		const [firstStarting, firstEnding] = first.split('-');
-		const [secondStarting, secondEnding] = second.split('-');
+		const [firstSection, secondSection] = parseSections(first, second);
+		const [firstStarting, firstEnding] = firstSection;
+		const [secondStarting, secondEnding] = secondSection;
 
 		if (
-			(Number(firstStarting) <= Number(secondStarting) &&
-				Number(firstEnding) >= Number(secondEnding)) ||
-			(Number(secondStarting) <= Number(firstStarting) &&
-				Number(secondEnding) >= Number(firstEnding))
+			(firstStarting <= secondStarting && firstEnding >= secondEnding) ||
+			(secondStarting <= firstStarting && secondEnding >= firstEnding)
 		) {
 			amountContained++;
 		}
 	});
 
 	return amountContained;
+};
+
+const parseSections = (...sections) => {
+	return sections.map((section) =>
+		section.split('-').map((number) => parseInt(number))
+	);
 };
 
 const parseData = (data) => {
