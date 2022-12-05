@@ -6,6 +6,14 @@ const main = () => {
 	// [ [ pair, pair ], [ pair, pair ], ... ]
 	const sectionPairs = parseData(data);
 
+	//pt 1
+	const amountContained = getTotalAmountContained(sectionPairs);
+	console.log(`The total amount of sections overlapping is ${amountContained}`);
+
+	//pt 2
+};
+
+const getTotalAmountContained = (sectionPairs) => {
 	let amountContained = 0;
 	sectionPairs.forEach(([first, second]) => {
 		const [firstStarting, firstEnding] = first.split('-');
@@ -21,7 +29,7 @@ const main = () => {
 		}
 	});
 
-	console.log(`The total amount of sections overlapping is ${amountContained}`);
+	return amountContained;
 };
 
 const parseData = (data) => {
