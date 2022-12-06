@@ -14,6 +14,7 @@ const main = () => {
 
 const handleCrane = (crates, steps, craneUpgrade = false) => {
 	let stepsCounter = 0;
+
 	while (stepsCounter < steps.length) {
 		const currentStep = steps[stepsCounter];
 		const { amount, from, to } = currentStep;
@@ -36,10 +37,7 @@ const handleCrane = (crates, steps, craneUpgrade = false) => {
 		stepsCounter++;
 	}
 
-	const topCrates = [];
-	crates.forEach((crate) => {
-		topCrates.push(crate.at(-1));
-	});
+	const topCrates = crates.map((crate) => crate.at(-1));
 	return topCrates;
 };
 
@@ -51,9 +49,8 @@ const parseData = (data) => {
 	const crates = result.slice(0, seperatorIndex - 1); // trim the numbering
 	const parsedCrates = parseCrates(crates);
 
-	const steps = result.slice(seperatorIndex + 1);
-
-	const stepsObj = steps
+	const stepsObj = result
+		.slice(seperatorIndex + 1)
 		.map((step) => step.match(/\d{1,2}/g).map(Number))
 		.map((steps) => ({ amount: steps[0], from: steps[1], to: steps[2] }));
 
@@ -64,25 +61,27 @@ const parseCrates = (crates) => {
 	const reversedCrates = crates.reverse();
 
 	const structuredCrates = [];
-	for (const currentCrate of reversedCrates) {
-		const parsedCrate = currentCrate
+
+	reversedCrates.forEach((crate) => {
+		const parsedCrates = crate
 			.match(/.{1,4}/g)
 			.map((crate) => crate.match(/[A-Z]/g))
 			.flat(); // unwrap crate in array
 
-		parsedCrate.forEach((crate, i) => {
+		parsedCrates.forEach((parsedCrate, i) => {
 			if (structuredCrates[i] == undefined) {
-				structuredCrates[i] = [crate];
+				structuredCrates[i] = [parsedCrate];
 			} else {
-				structuredCrates[i].push(crate);
+				structuredCrates[i].push(parsedCrate);
 			}
 		});
-	}
+	});
 
 	// [ [group], [group], ... ] - top of stack is end of array
-	return structuredCrates.map(
+	const noNullCrates = structuredCrates.map(
 		(groups) => groups.filter((crate) => crate !== null) // remove nulls
 	);
+	return noNullCrates;
 };
 
 main();
